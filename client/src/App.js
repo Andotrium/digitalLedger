@@ -8,6 +8,7 @@ import Register from './components/Register';
 import Dashboard from './components/Dashboard';
 import Transfer from './components/Transfer';
 import Issue from './components/Issue';
+import AuditLog from './components/AuditLog';
 
 const theme = createTheme();
 
@@ -23,6 +24,7 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/transfer" element={<Transfer />} />
             <Route path="/issue" element={<Issue />} />
+            <Route path="/audit" element={<AuditLog />} />
             <Route path="/" element={<Login />} />
           </Routes>
         </Router>

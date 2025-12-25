@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Container, Typography, Box, Card, CardContent, Button, Grid, Alert, AppBar, Toolbar, IconButton } from '@mui/material';
+import { Container, Typography, Box, Card, Button, Grid, Alert, AppBar, Toolbar, IconButton } from '@mui/material';
 import { AccountBalance, AccountBalanceWallet, TransferWithinAStation, ExitToApp } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -17,7 +17,13 @@ const Dashboard = () => {
       navigate('/login');
       return;
     }
+    const userRole = getRole();
+    if (userRole === 'AUDITOR') {
+      navigate('/audit');
+      return;
+    }
     fetchData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, navigate]);
 
   const fetchData = async () => {
@@ -56,48 +62,61 @@ const Dashboard = () => {
           </IconButton>
         </Toolbar>
       </AppBar>
-      <Container maxWidth="md">
-        <Box sx={{ mt: 4 }}>
-          <Typography variant="h4" gutterBottom>
+      <Container maxWidth="md" sx={{ py: 4 }}>
+        <Box sx={{ textAlign: 'center', mb: 4 }}>
+          <Typography variant="h3" component="h1" sx={{ mb: 1, fontWeight: 600 }}>
             Welcome to your Dashboard
           </Typography>
-          {error && <Alert severity="error">{error}</Alert>}
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6}>
-              <Card sx={{ display: 'flex', alignItems: 'center', p: 2 }}>
-                <AccountBalanceWallet sx={{ mr: 2, fontSize: 40 }} />
-                <Box>
-                  <Typography variant="h6">Balance</Typography>
-                  <Typography variant="h4">{balance}</Typography>
-                </Box>
-              </Card>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Card sx={{ p: 2 }}>
-                <Typography variant="h6" sx={{ mb: 1 }}>
-                  <AccountBalance sx={{ mr: 1 }} />
-                  Your Accounts
+          <Typography variant="body1" color="text.secondary">
+            Manage your digital equity ledger
+          </Typography>
+        </Box>
+        {error && <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>}
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={6}>
+            <Card sx={{ minHeight: 140, display: 'flex', alignItems: 'center', p: 3, boxShadow: 2 }}>
+              <AccountBalanceWallet sx={{ mr: 3, fontSize: 48, color: 'primary.main' }} />
+              <Box>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                  Total Balance
                 </Typography>
-                {accounts.map(acc => (
-                  <Typography key={acc._id} sx={{ mb: 0.5 }}>
+                <Typography variant="h3" sx={{ fontWeight: 700 }}>
+                  ${balance.toLocaleString()}
+                </Typography>
+              </Box>
+            </Card>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Card sx={{ minHeight: 140, p: 3, boxShadow: 2 }}>
+              <Typography variant="h6" sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
+                <AccountBalance sx={{ mr: 1, color: 'primary.main' }} />
+                Your Accounts
+              </Typography>
+              {accounts.length > 0 ? (
+                accounts.map(acc => (
+                  <Typography key={acc._id} variant="body2" sx={{ mb: 1, color: 'text.primary' }}>
                     {acc.name} - {acc.type}
                   </Typography>
-                ))}
-              </Card>
-            </Grid>
+                ))
+              ) : (
+                <Typography variant="body2" color="text.secondary">
+                  No accounts available
+                </Typography>
+              )}
+            </Card>
           </Grid>
-          <Box sx={{ mt: 4, textAlign: 'center' }}>
-            {role === 'INVESTOR' && (
-              <Button variant="contained" size="large" startIcon={<TransferWithinAStation />} onClick={() => navigate('/transfer')} sx={{ mr: 2 }}>
-                Transfer Equity
-              </Button>
-            )}
-            {role === 'ISSUER' && (
-              <Button variant="contained" size="large" startIcon={<AccountBalance />} onClick={() => navigate('/issue')} sx={{ mr: 2 }}>
-                Issue Equity
-              </Button>
-            )}
-          </Box>
+        </Grid>
+        <Box sx={{ mt: 4, textAlign: 'center' }}>
+          {role === 'INVESTOR' && (
+            <Button variant="contained" size="large" startIcon={<TransferWithinAStation />} onClick={() => navigate('/transfer')} sx={{ px: 4, py: 1.5, fontSize: '1.1rem' }}>
+              Transfer Equity
+            </Button>
+          )}
+          {role === 'ISSUER' && (
+            <Button variant="contained" size="large" startIcon={<AccountBalance />} onClick={() => navigate('/issue')} sx={{ px: 4, py: 1.5, fontSize: '1.1rem' }}>
+              Issue Equity
+            </Button>
+          )}
         </Box>
       </Container>
     </>
