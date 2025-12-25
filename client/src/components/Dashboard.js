@@ -22,9 +22,9 @@ const Dashboard = () => {
 
   const fetchData = async () => {
     try {
-      const balanceRes = await axios.get('http://localhost:8080/api/accounts/balance');
+      const balanceRes = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/accounts/balance`);
       setBalance(balanceRes.data.balance);
-      const accountsRes = await axios.get('http://localhost:8080/api/accounts/me');
+      const accountsRes = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/accounts/me`);
       setAccounts(accountsRes.data);
     } catch (err) {
       setError('Failed to fetch data');
